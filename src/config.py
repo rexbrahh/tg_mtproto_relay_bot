@@ -45,13 +45,38 @@ class Config:
     state_dir: str = "./state"
     state_last_seen_file: str = "last_seen.json"
 
+    # Telegram client identity (helps avoid UPDATE_APP_TO_LOGIN)
+    tg_device_model: str = "Mac"
+    tg_system_version: str = "macOS 14"
+    tg_app_version: str = "10.14"
+    tg_lang_code: str = "en"
+    tg_system_lang_code: str = "en"
+
     @classmethod
     def from_env(cls) -> "Config":
+        missing = [k for k in ("API_ID", "API_HASH", "SIGNAL_SOURCE_ID") if not os.environ.get(k)]
+        if missing:
+            raise ValueError(
+                "Missing required environment variables: "
+                + ", ".join(missing)
+                + ". Copy .env.example to .env and fill these values (direnv: `direnv allow`)."
+            )
+
+        try:
+            api_id = int(os.environ["API_ID"])  # required
+        except Exception as exc:  # pragma: no cover
+            raise ValueError("API_ID must be an integer") from exc
+
+        try:
+            signal_source_id = int(os.environ["SIGNAL_SOURCE_ID"])  # required
+        except Exception as exc:  # pragma: no cover
+            raise ValueError("SIGNAL_SOURCE_ID must be an integer") from exc
+
         return cls(
-            api_id=int(os.environ["API_ID"]),
+            api_id=api_id,
             api_hash=os.environ["API_HASH"],
             session_name=os.environ.get("SESSION_NAME", "spare_tg_user"),
-            signal_source_id=int(os.environ.get("SIGNAL_SOURCE_ID", "0") or 0),
+            signal_source_id=signal_source_id,
             dry_run=_get_bool("DRY_RUN", True),
             event_sink_stdout=_get_bool("EVENT_SINK_STDOUT", True),
             event_webhook_url=(os.environ.get("EVENT_WEBHOOK_URL") or "") or None,
@@ -63,6 +88,11 @@ class Config:
             status_http_port=_get_int("STATUS_HTTP_PORT", 8787),
             state_dir=os.environ.get("STATE_DIR", "./state"),
             state_last_seen_file=os.environ.get("STATE_LAST_SEEN_FILE", "last_seen.json"),
+            tg_device_model=os.environ.get("TG_DEVICE_MODEL", "Mac"),
+            tg_system_version=os.environ.get("TG_SYSTEM_VERSION", "macOS 14"),
+            tg_app_version=os.environ.get("TG_APP_VERSION", "10.14"),
+            tg_lang_code=os.environ.get("TG_LANG_CODE", "en"),
+            tg_system_lang_code=os.environ.get("TG_SYSTEM_LANG_CODE", "en"),
         )
 
     def hot_reload(self) -> None:

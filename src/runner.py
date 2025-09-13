@@ -4,8 +4,10 @@ import asyncio
 import signal
 from typing import Any, Dict, List
 import contextlib
+from pathlib import Path
 
 from telethon import TelegramClient, events
+from telethon.errors.rpcerrorlist import UpdateAppToLoginError
 
 from .config import Config
 from .models import ParsedSignal
@@ -82,8 +84,31 @@ async def run() -> None:
         loop.add_signal_handler(s, _sigterm if s == signal.SIGTERM else _sigint)
     loop.add_signal_handler(signal.SIGHUP, _sighup)
 
-    client = TelegramClient(cfg.session_name, cfg.api_id, cfg.api_hash)
-    await client.start()
+    # Store Telethon session under state dir to keep secrets out of repo root
+    session_path = Path(cfg.state_dir) / cfg.session_name
+    client = TelegramClient(
+        str(session_path),
+        cfg.api_id,
+        cfg.api_hash,
+        device_model=cfg.tg_device_model,
+        system_version=cfg.tg_system_version,
+        app_version=cfg.tg_app_version,
+        lang_code=cfg.tg_lang_code,
+        system_lang_code=cfg.tg_system_lang_code,
+    )
+    try:
+        await client.start()
+    except UpdateAppToLoginError as e:  # pragma: no cover - network dependent
+        log_event(
+            "update_app_to_login",
+            level="error",
+            hint=(
+                "Telegram requires a newer app identity to login. "
+                "Set TG_APP_VERSION/TG_SYSTEM_VERSION or login once via official app then retry."
+            ),
+            error=str(e),
+        )
+        return
     log_event("client_started", session=cfg.session_name)
 
     # Status server

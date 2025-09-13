@@ -32,6 +32,12 @@ logs/
 *.log
 state/
 
+# Telethon session files (contain auth tokens)
+*.session
+*.session-journal
+*.session-wal
+*.session-shm
+
 # Build artifacts
 build/
 dist/
