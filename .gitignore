@@ -1,0 +1,58 @@
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+.history/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+
+# Environments
+.venv/
+.env
+.env.*
+.python-version
+
+# Tool caches / coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.cache/
+
+# Logs & runtime state
+logs/
+*.log
+state/
+
+# Build artifacts
+build/
+dist/
+
+# Nix / direnv
+.direnv/
+result
+result-*
+
+# AI agent-related docs (keep out of git)
+AGENTS.md
+CLAUDE.md
+OPENAI.md
+ANTHROPIC.md
+DEEPSEEK.md
+COPILOT.md
+CHATGPT.md
+ai_notes.md
+ai-*.md
+*.agent.md
+
+# Project planning/metadata (local only)
+project.md
+project.json
