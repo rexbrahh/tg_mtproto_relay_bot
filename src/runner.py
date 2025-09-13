@@ -96,6 +96,15 @@ async def run() -> None:
         lang_code=cfg.tg_lang_code,
         system_lang_code=cfg.tg_system_lang_code,
     )
+    log_event(
+        "tg_identity",
+        device_model=cfg.tg_device_model,
+        system_version=cfg.tg_system_version,
+        app_version=cfg.tg_app_version,
+        lang_code=cfg.tg_lang_code,
+        system_lang_code=cfg.tg_system_lang_code,
+        session=str(session_path),
+    )
     try:
         await client.start()
     except UpdateAppToLoginError as e:  # pragma: no cover - network dependent
