@@ -6,7 +6,7 @@ from typing import Any, Dict, List
 import contextlib
 from pathlib import Path
 
-from telethon import TelegramClient, events
+from telethon import TelegramClient, events, __version__ as telethon_version
 from telethon.errors.rpcerrorlist import UpdateAppToLoginError
 
 from .config import Config
@@ -108,6 +108,45 @@ async def run() -> None:
     try:
         await client.start()
     except UpdateAppToLoginError as e:  # pragma: no cover - network dependent
+        # Export a detailed JSON log to help troubleshooting
+        debug_path = Path(cfg.state_dir) / "login_debug.json"
+        try:
+            debug_payload = {
+                "ts": __import__("datetime").datetime.utcnow().isoformat() + "Z",
+                "event": "update_app_to_login",
+                "error": str(e),
+                "hint": (
+                    "Telegram requires a newer app identity to login. "
+                    "Set TG_APP_VERSION/TG_SYSTEM_VERSION or login once via official app then retry."
+                ),
+                "identity": {
+                    "device_model": cfg.tg_device_model,
+                    "system_version": cfg.tg_system_version,
+                    "app_version": cfg.tg_app_version,
+                    "lang_code": cfg.tg_lang_code,
+                    "system_lang_code": cfg.tg_system_lang_code,
+                },
+                "runtime": {
+                    "telethon_version": telethon_version,
+                    "python_version": __import__("sys").version,
+                    "platform": __import__("platform").platform(),
+                },
+                "session": str(session_path),
+                # Avoid leaking secrets, just indicate presence
+                "secrets": {
+                    "api_id_present": bool(cfg.api_id),
+                    "api_hash_present": bool(cfg.api_hash),
+                },
+            }
+            import json
+
+            debug_path.parent.mkdir(parents=True, exist_ok=True)
+            with debug_path.open("w", encoding="utf-8") as f:
+                json.dump(debug_payload, f, ensure_ascii=False)
+            log_event("exported_login_debug", level="error", path=str(debug_path))
+        except Exception as _exc:  # pragma: no cover - best effort
+            log_event("export_login_debug_failed", level="error", error=str(_exc))
+
         log_event(
             "update_app_to_login",
             level="error",
