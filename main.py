@@ -5,7 +5,7 @@ from src.runner import run
 
 
 def main() -> None:
-    load_dotenv()
+    load_dotenv(override=True)
     try:
         import uvloop  # type: ignore
 
