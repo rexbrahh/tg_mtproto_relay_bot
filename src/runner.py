@@ -17,6 +17,7 @@ from .sinks.webhook import WebhookSink
 from .state import StateManager
 from .status import StatusState, serve_status
 from .telemetry import log_event
+from .tg_identity import resolve_identity
 
 
 class SinkManager:
@@ -86,23 +87,24 @@ async def run() -> None:
 
     # Store Telethon session under state dir to keep secrets out of repo root
     session_path = Path(cfg.state_dir) / cfg.session_name
+    identity = await resolve_identity(cfg)
     client = TelegramClient(
         str(session_path),
         cfg.api_id,
         cfg.api_hash,
-        device_model=cfg.tg_device_model,
-        system_version=cfg.tg_system_version,
-        app_version=cfg.tg_app_version,
-        lang_code=cfg.tg_lang_code,
-        system_lang_code=cfg.tg_system_lang_code,
+        device_model=identity.device_model,
+        system_version=identity.system_version,
+        app_version=identity.app_version,
+        lang_code=identity.lang_code,
+        system_lang_code=identity.system_lang_code,
     )
     log_event(
         "tg_identity",
-        device_model=cfg.tg_device_model,
-        system_version=cfg.tg_system_version,
-        app_version=cfg.tg_app_version,
-        lang_code=cfg.tg_lang_code,
-        system_lang_code=cfg.tg_system_lang_code,
+        device_model=identity.device_model,
+        system_version=identity.system_version,
+        app_version=identity.app_version,
+        lang_code=identity.lang_code,
+        system_lang_code=identity.system_lang_code,
         session=str(session_path),
     )
     try:
@@ -120,11 +122,11 @@ async def run() -> None:
                     "Set TG_APP_VERSION/TG_SYSTEM_VERSION or login once via official app then retry."
                 ),
                 "identity": {
-                    "device_model": cfg.tg_device_model,
-                    "system_version": cfg.tg_system_version,
-                    "app_version": cfg.tg_app_version,
-                    "lang_code": cfg.tg_lang_code,
-                    "system_lang_code": cfg.tg_system_lang_code,
+                    "device_model": identity.device_model,
+                    "system_version": identity.system_version,
+                    "app_version": identity.app_version,
+                    "lang_code": identity.lang_code,
+                    "system_lang_code": identity.system_lang_code,
                 },
                 "runtime": {
                     "telethon_version": telethon_version,

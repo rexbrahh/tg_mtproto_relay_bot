@@ -46,9 +46,9 @@ class Config:
     state_last_seen_file: str = "last_seen.json"
 
     # Telegram client identity (helps avoid UPDATE_APP_TO_LOGIN)
-    tg_device_model: str = "Mac"
-    tg_system_version: str = "macOS 14"
-    tg_app_version: str = "10.14"
+    tg_device_model: str = "iPhone 16 Pro"
+    tg_system_version: str = "iOS 18.0"
+    tg_app_version: str = "auto"
     tg_lang_code: str = "en"
     tg_system_lang_code: str = "en"
 
@@ -88,9 +88,9 @@ class Config:
             status_http_port=_get_int("STATUS_HTTP_PORT", 8787),
             state_dir=os.environ.get("STATE_DIR", "./state"),
             state_last_seen_file=os.environ.get("STATE_LAST_SEEN_FILE", "last_seen.json"),
-            tg_device_model=os.environ.get("TG_DEVICE_MODEL", "Mac"),
-            tg_system_version=os.environ.get("TG_SYSTEM_VERSION", "macOS 14"),
-            tg_app_version=os.environ.get("TG_APP_VERSION", "10.14"),
+            tg_device_model=os.environ.get("TG_DEVICE_MODEL", "iPhone 16 Pro"),
+            tg_system_version=os.environ.get("TG_SYSTEM_VERSION", "iOS 18.0"),
+            tg_app_version=os.environ.get("TG_APP_VERSION", "auto"),
             tg_lang_code=os.environ.get("TG_LANG_CODE", "en"),
             tg_system_lang_code=os.environ.get("TG_SYSTEM_LANG_CODE", "en"),
         )
