@@ -89,4 +89,3 @@ def test_resolve_identity_respects_explicit_version():
     identity = run(resolve_identity(cfg, fetch_version=fake_fetch))
 
     assert identity.app_version == "11.99"
-

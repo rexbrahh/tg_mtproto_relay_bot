@@ -68,8 +68,8 @@ def _bundles_for_device(device_model: str) -> tuple[str, ...]:
 
 def _parse_version_tuple(version: str) -> tuple[int, ...]:
     parts: list[int] = []
-    for token in version.split('.'):
-        digits = ''.join(ch for ch in token if ch.isdigit())
+    for token in version.split("."):
+        digits = "".join(ch for ch in token if ch.isdigit())
         if digits == "":
             continue
         parts.append(int(digits))

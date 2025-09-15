@@ -48,6 +48,7 @@
           ps.uvicorn
           ps.pydantic
           ps.pytest
+          ps.pytest-asyncio
           ps.mypy
           ps.black
         ]);
@@ -66,9 +67,18 @@
             export PYTHONUNBUFFERED=1
             exec ${pyEnv}/bin/python main.py
           '' + "/bin/bot";
+          meta = {
+            description = "Run the GMGN relay bot";
+          };
         };
 
-        checks.ci = pkgs.runCommand "ci-checks" { buildInputs = [ pyEnv pkgs.ruff ]; } ''
+        checks.ci = pkgs.runCommand "ci-checks" {
+          buildInputs = [ pyEnv pkgs.ruff ];
+          src = self;
+        } ''
+          cp -R "$src"/. .
+          chmod -R +w .
+          export PYTHONPATH=$PWD/src:${PYTHONPATH:-}
           set -euo pipefail
           ruff check .
           black --check .
