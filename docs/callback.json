@@ -1,0 +1,9 @@
+{
+  "id": "7be0b21c-8d5a-5e52-b9d6-3b8b12b6f1a1",
+  "status": "confirmed|failed|expired|ignored",
+  "tx_hash": "5y...Zt",
+  "spent_sol": 0.0503,
+  "received": { "mint": "TOKENM1nt...", "amount": "12345.67" },
+  "reason": "min_liquidity|blacklist|route_error|timeout",
+  "latency_ms": 1870
+}

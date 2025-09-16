@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TradeEventV1",
+  "type": "object",
+  "required": ["version", "id", "ts", "source", "action", "mint"],
+  "properties": {
+    "version": { "const": "1" },
+    "id": { "type": "string", "minLength": 8 },
+    "ts": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "required": ["platform", "chat_id", "message_id"],
+      "properties": {
+        "platform": { "enum": ["telegram"] },
+        "chat_id": { "type": "integer" },
+        "message_id": { "type": "integer" },
+        "sender_id": { "type": "integer" }
+      }
+    },
+    "action": { "enum": ["trade"] },
+    "side": { "enum": ["buy", "sell"], "default": "buy" },
+    "mint": { "type": "string", "minLength": 32, "maxLength": 44 },
+    "base_asset": { "enum": ["SOL", "USDC"], "default": "SOL" },
+    "params": {
+      "type": "object",
+      "properties": {
+        "slippage_bps": { "type": "integer", "minimum": 1, "maximum": 2000 },
+        "anti_mev_fee_sol": { "type": "number", "minimum": 0 },
+        "budget_sol": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "meta": { "type": "object" }
+  },
+  "additionalProperties": false
+}

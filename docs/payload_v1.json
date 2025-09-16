@@ -1,0 +1,24 @@
+{
+  "version": "1",
+  "id": "7be0b21c-8d5a-5e52-b9d6-3b8b12b6f1a1",
+  "ts": "2025-09-15T23:10:00Z",
+  "source": {
+    "platform": "telegram",
+    "chat_id": 123456789,
+    "message_id": 44556677,
+    "sender_id": 11223344
+  },
+  "action": "trade",
+  "side": "buy",
+  "mint": "So11111111111111111111111111111111111111112",
+  "base_asset": "SOL",
+  "params": {
+    "slippage_bps": 50,
+    "anti_mev_fee_sol": 0.002,
+    "budget_sol": 0.05
+  },
+  "meta": {
+    "raw_text": "BUY $TOKEN ... CA: So1111...",
+    "relay_version": "relay-0.3.1"
+  }
+}
